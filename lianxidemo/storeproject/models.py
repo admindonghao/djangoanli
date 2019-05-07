@@ -8,15 +8,36 @@ class Users(AbstractUser):
     qq = models.IntegerField(blank=True, null=True, verbose_name='QQ号码')
     plone = models.IntegerField(blank=True, null=True, verbose_name='手机号码')
 
+    class Meta():
+        verbose_name = '用户'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.username
+
 
 # 标签表
 class Labels(models.Model):
     name = models.CharField(max_length=10, verbose_name='标签')
 
+    class Meta():
+        verbose_name = '标签'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.name
+
 
 # 大类
 class Big_Class(models.Model):
     name = models.CharField(max_length=20, verbose_name='类名')
+
+    class Meta():
+        verbose_name = '大类'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.name
 
 
 # 分类表
@@ -24,25 +45,56 @@ class Classify(models.Model):
     categories = models.ForeignKey(Big_Class, on_delete=models.CASCADE, verbose_name='大类')
     category = models.CharField(max_length=20, verbose_name='种类')
     rank = models.IntegerField(default=1, verbose_name='排列顺序')
-    sex = models.BooleanField(default=0, verbose_name='男装（默认），女装')
+    sex = models.BooleanField(default=0, verbose_name='男装，女装（默认）')
+
+    class Meta():
+        verbose_name = '分类'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        se = '男' if self.sex == 0 else '女'
+        return (self.category + '----' + se)
 
 
 # 品牌
 class Brands(models.Model):
     brand = models.CharField(max_length=20, verbose_name='品牌')
 
+    class Meta():
+        verbose_name = '品牌'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.brand
+
 
 # 尺寸
 class Sizes(models.Model):
     size = models.CharField(max_length=10, verbose_name='尺寸')
 
+    class Meta():
+        verbose_name = '尺寸'
+        verbose_name_plural = verbose_name
+        ordering = ['-size',]
+
+    def __str__(self):
+        return self.size
+
 
 # 广告
-class ad(models.Model):
+class Ad(models.Model):
     title = models.CharField(max_length=50, verbose_name='广告标题')
     img = models.ImageField(upload_to='ad/%Y/%m', verbose_name='广告图片路径')
     data = models.DateTimeField(auto_now_add=True, verbose_name='发布时间')
-    rank = models.ImageField(default=1, verbose_name='排列顺序')
+    rank = models.IntegerField(default=1, verbose_name='排列顺序')
+
+    class Meta():
+        verbose_name = '广告'
+        verbose_name_plural = verbose_name
+        ordering = ['-id']
+
+    def __str__(self):
+        return self.title
 
 
 # 商品表
@@ -54,6 +106,7 @@ class Goods(models.Model):
     priceed = models.IntegerField(default=0.0, verbose_name='原价')
     price = models.IntegerField(default=0.0, verbose_name='现价')
     abstract = models.TextField(verbose_name='简介')
+    labels = models.ManyToManyField(Labels, verbose_name='标签')
     sales = models.IntegerField(default=0, verbose_name='销量')
     inventory = models.IntegerField(default=1, verbose_name='库存')
     show_picture = models.ImageField(upload_to='clothing/%Y/%m', default='clothing/default.jpg', verbose_name='展示图片路径')
@@ -65,4 +118,12 @@ class Goods(models.Model):
                                           verbose_name='详情图片路径3')
     shop_cart_picture = models.ImageField(upload_to='clothing/%Y/%m', default='clothing/ce.jpg',
                                           verbose_name='购物车中的图片')
+
+    class Meta():
+        verbose_name = '商品'
+        verbose_name_plural = verbose_name
+        ordering = ['-id']
+
+    def __str__(self):
+        return self.name
 
