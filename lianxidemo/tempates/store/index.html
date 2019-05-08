@@ -14,10 +14,11 @@
                 {% csrf_token %}
                 <div class="col-md-3 col-md2">
                         <div class="col-md1 simpleCart_shelfItem">
-                            <a href="#">{# 跳转到商品详情页 #}
+                            <a href="{% url 'store:details' clo.id %}">{# 跳转到商品详情页 #}
                                 <img class="img-responsive" src="/static/uploads/{{ clo.show_picture }}" alt="图片加载失败" />
                             </a>
-                            <h3><a href="#">{{ clo.brand }}</a></h3>
+                            <h3><a href="{% url 'store:details' clo.id %}">{{ clo.name }}</a></h3>
+                            <span>品牌：{{ clo.brand }}</span>
                             <div class="price">
                                     <h5 class="item_price">{{ clo.price }}元</h5>
 

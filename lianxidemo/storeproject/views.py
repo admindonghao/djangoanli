@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.core.paginator import PageNotAnInteger,InvalidPage,EmptyPage,Paginator
 from django.contrib.auth import logout, login, authenticate
+from django.db.models import F
 from .models import *
 from .forms import *
 
@@ -31,7 +32,6 @@ def index(request):
     clo_list = Goods.objects.all()
     clo_list = getPage(request,clo_list)
     category_list = global_setting(request)
-    print(category_list['category_list_m'])
     return render(request, 'store/index.html', locals())
 
 
@@ -87,5 +87,59 @@ def login_s(request):
 
 # 退出
 def quit(request):
-    return HttpResponse('已退出')
+    logout(request)
+    return redirect(reverse('store:login_s',))
 
+
+# 分类列表页
+def classifys(request,id):
+    try:
+        category = Classify.objects.get(pk=id)
+    except:
+        return render(request, 'store/error.html', {'reasom': '没有此分类'})
+    clo_list = category.goods_set.all()
+    clo_list = getPage(request, clo_list)
+    category_list = global_setting(request)
+    return render(request, 'store/products.html', locals())
+
+
+# 标签列表页
+def tags(request,id):
+    try:
+        tag = Labels.objects.get(pk=id)
+    except:
+        return render(request, 'store/error.html', {'reasom': '没有此标签'})
+    clo_list = tag.goods_set.all()
+    clo_list = getPage(request, clo_list)
+    category_list = global_setting(request)
+    return render(request, 'store/products.html', locals())
+
+
+# 品牌列表页
+def brands(request, id):
+    try:
+        brand = Brands.objects.get(pk = id)
+    except:
+        return render(request, 'store/error.html', {'reasom': '没有这个品牌'})
+    clo_list = brand.goods_set.all()
+    clo_list = getPage(request, clo_list)
+    category_list = global_setting(request)
+    return render(request, 'store/products.html', locals())
+
+
+# 打折商品
+def discount(request):
+    clo_list = Goods.objects.filter(price__lt=F('priceed'))
+    clo_list = getPage(request, clo_list)
+    category_list = global_setting(request)
+    return render(request, 'store/products.html', locals())
+
+
+# 商品详细页
+def details(request, id):
+    try:
+        clo = Goods.objects.get(pk=id)
+    except:
+        return render(request, 'store/error.html', {'reasom': '没有这个商品'})
+    category_list = global_setting(request)
+    return render(request, 'store/single.html', locals())

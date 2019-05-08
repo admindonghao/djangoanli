@@ -1,15 +1,15 @@
-{% extends 'base.html' %}
+{% extends 'store/base.html' %}
 {% load staticfiles %}
 {% block content_block %}
     <div class="products">
 	<div class="container">
         {% if category %}
-		    <h1>{{ category.name }}</h1>
+		    <h1>{{ category.category }}</h1>
         {% elif tag %}
             <h1>{{ tag.name }}</h1>
         {% elif brand %}
-            <h1>{{ brand.name }}</h1>
-        {% elif discount %}
+            <h1>{{ brand.brand }}</h1>
+        {% else %}
             <h1>打折商品</h1>
         {% endif %}
 		<div class="col-md-9">
@@ -18,13 +18,15 @@
                     {% for clo in clo_list %}
                     <div class="col-md-4 col-md3">
                         <div class="col-md1 simpleCart_shelfItem">
-                            <a href="{% url 'detail' %}?did={{ clo.id }}">
-                                <img class="img-responsive" src="{{ MEDIA_URL }}{{ clo.image_url_i }}" alt="" />
+                            <a href="{% url 'store:details' clo.id %}">
+                                <img class="img-responsive" src="/static/uploads/{{ clo.details_picture_1 }}"
+                                     alt="图片加载失败" />
                             </a>
-                            <h3><a href="{% url 'detail' %}?did={{ clo.id }}">{{ clo.brand.name }}</a></h3>
+                            <h3><a href="{% url 'store:details' clo.id %}">{{ clo.name }}</a></h3>
+                            <span>品牌：{{ clo.brand }}</span>
                             <div class="price">
-                                    <h5 class="item_price">{{ clo.new_price }}元</h5>
-                                    <a href="{% url 'add_cart' %}?cid={{ clo.id }}" class="item_add">放入购物车</a>
+                                    <h5 class="item_price">{{ clo.price }}元</h5>
+                                    <a href="#" class="item_add">放入购物车</a>
                                     <div class="clearfix"> </div>
                             </div>
                         </div>
@@ -34,10 +36,10 @@
                     <h2>还是空的哦~</h2>
                 {% endif %}
 			    <div class="clearfix"> </div>
-            {% include 'pagination.html' %}
+            {% include 'store/pagination.html' %}
 			</div>
 		</div>
-        {% include 'pro_right.html' %}
+        {% include 'store/pro_right.html' %}
 		<div class="clearfix"> </div>
 	</div>
 </div>
