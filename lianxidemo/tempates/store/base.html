@@ -55,12 +55,14 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 <a  href="{% url 'store:quit' %}"  >退出</a></p>
             {% endif %}
             <div class="cart box_1">
-                <a href="#">
+                <a href="{% url 'store:view_cart' %}">
                     <h3>
                         <div class="total">
                             {% if request.user.is_authenticated %}
                                 {% if cart.total_price %}
                                     <span>{{ cart.total_price }}元</span>
+                                {% elif category_list.cart.total_price %}
+                                    <span>{{ category_list.cart.total_price }}元</span>
                                 {% else %}
                                     <span>0.0元</span>
                                 {% endif %}
@@ -70,7 +72,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                         </div>
                         <img src="/static/images/cart.png" alt=""/></h3>
                 </a>
-                <p><a href="#" class="simpleCart_empty">清空购物车</a></p>
+                <p><a href="{% url 'store:clear_cart' %}" class="simpleCart_empty">清空购物车</a></p>
 
             </div>
             <div class="clearfix"> </div>

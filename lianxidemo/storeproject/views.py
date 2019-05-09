@@ -3,12 +3,27 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.core.paginator import PageNotAnInteger,InvalidPage,EmptyPage,Paginator
 from django.contrib.auth import logout, login, authenticate
+# from django.core import serializers
 from django.db.models import F
 from .models import *
 from .forms import *
 
 
 # Create your views here.
+# 购物车相关的装饰器
+def authenticated_view(function):
+    def wrap(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return function(request)
+        else:
+            login_form = LoginFrom()
+            return render(request, 'store/login.html', locals())
+
+    wrap.__doc__=function.__doc__
+    wrap.__name__=function.__name__
+    return wrap
+
+
 def global_setting(request):
     # 站点信息
     classify_list = Classify.objects.all()
@@ -23,6 +38,7 @@ def global_setting(request):
     # 标签
     tag_list = Labels.objects.all()
     # 购物车
+    cart = request.session.get(request.user.id, None)
     return locals()
 
 
@@ -75,11 +91,13 @@ def login_s(request):
             username = login_form.cleaned_data['username']
             passworf = login_form.cleaned_data['password']
             user = authenticate(username=username, password=passworf)
+            print(user)
+            # return HttpResponse('登录成功')
             if user is not None:
                 user.backend = 'django.contrib.auth.backends.ModelBackend'
                 login(request, user)
             else:
-                return render(request, 'error.html', {'reason': '登录验证失败'})
+                return render(request, 'store/error.html', {'reasom': '登录验证失败'})
             return redirect(request.POST['source_url'])
         else:
             return render(request, 'store/error.html', {'reasom':login_form.errors})
@@ -143,3 +161,41 @@ def details(request, id):
         return render(request, 'store/error.html', {'reasom': '没有这个商品'})
     category_list = global_setting(request)
     return render(request, 'store/single.html', locals())
+
+
+# 查看购物车
+@authenticated_view
+def view_cart(request):
+    cart = request.session.get(request.user.id)
+    return render(request, 'store/checkout.html', locals())
+    # return HttpResponse('购物车')
+
+
+# 加入购物车
+def add_cart(request, id):
+    try:
+        try:
+            goods = Goods.objects.get(pk=id)
+        except:
+            return render(request, 'store/error.html', {'reasom': '没有这个商品'})
+        cart = request.session.get(request.user.id, None)
+        if not cart:
+            cart = Cart()
+            cart.add(goods)
+            request.session[request.user.id] = cart
+        else:
+            cart.add(goods)
+            request.session[request.user.id] = cart
+    except Exception as e:
+        print(e)
+    return render(request, 'store/checkout.html', locals())
+    # return HttpResponse('添加到购物车')
+
+
+# 清空购物车
+def clear_cart(request):
+    cart = Cart()
+    request.session[request.user.id] = cart
+    return render(request, 'store/checkout.html', locals())
+
+

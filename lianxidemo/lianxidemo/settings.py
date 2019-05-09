@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'x1hi-uds!^1^!rrs)r9)wygahzbb4suo4@98#@zyk%c2mh$aq='
-
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

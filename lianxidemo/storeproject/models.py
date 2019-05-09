@@ -45,7 +45,7 @@ class Classify(models.Model):
     categories = models.ForeignKey(Big_Class, on_delete=models.CASCADE, verbose_name='大类')
     category = models.CharField(max_length=20, verbose_name='种类')
     rank = models.IntegerField(default=1, verbose_name='排列顺序')
-    sex = models.BooleanField(default=0, verbose_name='男装，女装（默认）')
+    sex = models.IntegerField(default=0, verbose_name='男装（默认），女装')
 
     class Meta():
         verbose_name = '分类'
@@ -126,4 +126,38 @@ class Goods(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# 购物车的条目
+class Caritme(models.Model):
+    clothing = models.ForeignKey(Goods, verbose_name='购物车中产品条目', on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=0, verbose_name='数量')
+    sum_price = models.FloatField(default=0.0, verbose_name='小计')
+
+    class Meta:
+        verbose_name = '购物车条目'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return str(self.id)
+
+
+# 购物车的类
+class Cart(object):
+    def __init__(self):
+        self.items = []
+        self.total_price = 0.0
+
+    def add(self, goods):
+        self.total_price += goods.price
+        for item in self.items:
+            if item.clothing.id == goods.id:
+                item.quantity += 1
+                item.sum_price += goods.price
+                # item.save()
+                return
+        else:
+            cari = Caritme(clothing = goods,quantity = 1,sum_price = goods.price)
+            # cari.save()
+            self.items.append(cari)
 

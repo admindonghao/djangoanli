@@ -24,7 +24,7 @@
 
 
                                      <input type="hidden" name="chid" value="{{ clo.id }}">
-                                    <a href="#" class="item_add" onclick="document.getElementById('subform{{ clo.id }}').submit();">放入购物车</a>
+                                    <a href="{% url 'store:add_cart' clo.id %}" class="item_add" onclick="document.getElementById('subform{{ clo.id }}').submit();">放入购物车</a>
 
                                     <div class="clearfix"> </div>
                             </div>

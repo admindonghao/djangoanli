@@ -26,7 +26,7 @@
                             <span>品牌：{{ clo.brand }}</span>
                             <div class="price">
                                     <h5 class="item_price">{{ clo.price }}元</h5>
-                                    <a href="#" class="item_add">放入购物车</a>
+                                    <a href="{% url 'store:add_cart' clo.id %}" class="item_add">放入购物车</a>
                                     <div class="clearfix"> </div>
                             </div>
                         </div>

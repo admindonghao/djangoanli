@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'store/base.html' %}
 {% load staticfiles %}
 {% block content_block %}
 <div class="container">
@@ -14,15 +14,17 @@
 		  </tr>
           {% for item in cart.items %}
 		  <tr>
-			<td class="ring-in"><a href="{% url 'detail' %}?did={{ item.clothing.id }}" class="at-in"><img src="{{ MEDIA_URL }}{{ item.clothing.image_url_c }}" class="img-responsive" alt=""></a>
+			<td class="ring-in"><a href="{% url 'store:details' item.clothing.id %}" class="at-in">
+                <img src="/static/uploads/{{ item.clothing.shop_cart_picture }}" class="img-responsive"
+                     alt="图片加载失败"></a>
 			<div class="sed">
 				<h5>{{ item.clothing.name }}</h5>
-				<p>{{ item.clothing.desc }}</p>
+				<p>{{ item.clothing.abstract }}</p>
 			</div>
 			<div class="clearfix"> </div></td>
 			<td class="check"><input type="text" value="{{ item.quantity }}" readonly="readonly"></td>
-			<td style="text-decoration:line-through">{{ item.clothing.old_price }}元</td>
-			<td>{{ item.clothing.new_price }}元</td>
+			<td style="text-decoration:line-through">{{ item.clothing.priceed }}元</td>
+			<td>{{ item.clothing.price }}元</td>
 			<td>{{ item.sum_price }}元</td>
 		  </tr>
           {% endfor %}
